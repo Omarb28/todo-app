@@ -3,6 +3,15 @@
     <title>Todo App</title>
   </head>
   <body>
+    <form method="POST" action="/todos/create">
+      <div>
+        <label for="name">Create a To-Do Item</label>
+        <input type="text" id="description" name="description" />
+      </div>
+      <div>
+        <input type="submit" id="submit" value="Create" />
+      </div>
+    </form>
     <ul>
     {% for todo in data %}
       <li>{{ todo['description'] }}</li>
