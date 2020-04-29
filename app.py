@@ -3,11 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import sys
 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://vagrant:vagrant@localhost:5432/todoapp'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
 
 class Todo(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -17,7 +19,6 @@ class Todo(db.Model):
     return '<Todo %s, %s>' % (self.id, self.description)
     #return 'hello'
 
-db.create_all()
 
 @app.route('/')
 def index():
