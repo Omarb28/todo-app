@@ -49,6 +49,7 @@
           todo.innerHTML = jsonResponse['description'];
           document.getElementById('todos').appendChild(todo);
           document.getElementById('error').className = 'hidden';
+          document.getElementById('description').value = '';
         })
         .catch(function() {
           document.getElementById('error').className = '';
