@@ -8,25 +8,58 @@
       #error {
         color: red;
       }
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .list {
+        margin: 100px;
+        padding: 50px;
+        border: solid 1px black;
+        display: inline-block;
+      }
     </style>
   </head>
   <body>
-    <form id="form" method="POST" action="/todos/create">
-      <div>
-        <label for="name">Create a To-Do Item</label>
-        <input type="text" id="description" name="description" />
-      </div>
-      <div>
-        <input type="submit" id="submit" value="Create" />
-      </div>
-    </form>
-    <div id="error" class="hidden">Something went wrong!</div>
-    <ul id="todos">
-    {% for todo in data %}
-      <li>{{ todo['description'] }}</li>
-    {% endfor %}
-    </ul>
+    <div class="list">
+      <form id="form" method="POST" action="/todos/create">
+        <div>
+          <label for="name">Create a To-Do Item</label>
+          <input type="text" id="description" name="description" />
+        </div>
+        <div>
+          <input type="submit" id="submit" value="Create" />
+        </div>
+      </form>
+      <div id="error" class="hidden">Something went wrong!</div>
+      <ul id="todos">
+      {% for todo in todos %}
+        <li><input type="checkbox" class="check-completed" {%if todo.completed %} checked {% endif %}/> {{ todo['description'] }}</li>
+      {% endfor %}
+      </ul>
+    </div>
     <script>
+      const checkboxes = document.querySelectorAll('.check-completed');
+      
+      for (let i = 0; i < checkboxes.length; i++) {
+        const checkbox = checkboxes[i];
+        
+        checkbox.onchange = function(e) {
+          const newCompleted = e.target.checked;
+
+          fetch('/todos/set-completed/' + (i+1), {
+            method: 'POST',
+            body: JSON.stringify({
+              'completed': newCompleted
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+        };
+      }
+      
       document.getElementById('form').onsubmit = function(e) {
         e.preventDefault();
 
