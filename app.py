@@ -12,12 +12,13 @@ migrate = Migrate(app, db)
 
 
 class Todo(db.Model):
+  __tablename__ = 'todos'
   id = db.Column(db.Integer, primary_key=True)
   description = db.Column(db.String(), nullable=False)
+  completed = db.Column(db.Boolean, nullable=False, default=False)
 
   def __repr__(self):
     return '<Todo %s, %s>' % (self.id, self.description)
-    #return 'hello'
 
 
 @app.route('/')
