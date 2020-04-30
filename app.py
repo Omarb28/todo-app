@@ -66,6 +66,29 @@ def set_completed_todo(todo_id):
     abort(400)
   else:
     return redirect(url_for('index')), 200
+
+@app.route('/todos/<todo_id>/delete', methods=['POST'])
+def delete_todo(todo_id):
+  error = False
+  body = {}
+  try:
+    to_delete = request.get_json()['delete']
+    if to_delete:
+      todo = Todo.query.get(todo_id)
+      db.session.delete(todo)
+      db.session.commit()
+      body['delete'] = True
+  except:
+    error = True
+    db.session.rollback()
+    print(sys.exc_info())
+  finally:
+    db.session.close()
+  
+  if error:
+    abort(400)
+  else:
+    return jsonify(body)    
   
 
 
