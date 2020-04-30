@@ -12,12 +12,28 @@
         list-style: none;
         padding: 0;
         margin: 0;
+        width: 200px;
       }
-      .list {
+      div.list {
         margin: 100px;
         padding: 50px;
         border: solid 1px black;
         display: inline-block;
+      }
+      li {
+        clear: both;
+        padding-top: 5px;
+      }
+      .delete-button {
+        -webkit-appearance: none;
+        border: none;
+        outline: none;
+        background: none;
+        color: red;
+        font-weight: bold;
+        font-size: 1em;
+        float: right;
+        cursor: pointer;
       }
     </style>
   </head>
@@ -37,7 +53,7 @@
       {% for todo in todos %}
         <li>
           <input type="checkbox" class="check-completed" data-id="{{ todo.id }}" {%if todo.completed %} checked {% endif %}/> {{ todo['description'] }}
-          <button class="delete-button" data-id="{{ todo.id }}">delete</button>
+          <button class="delete-button" data-id="{{ todo.id }}">X</button>
         </li>
       {% endfor %}
       </ul>
@@ -49,35 +65,26 @@
 
       for (let i = 0; i < buttons.length; i++) {
         const btn = buttons[i];
-        const todoListItem = btn.parentNode;
 
         btn.onclick = function(e) {
           const todoId = e.target.dataset.id;
+          const listItem = btn.parentNode;
 
-          fetch('/todos/' + todoId + '/delete', {
-            method: 'POST',
-            body: JSON.stringify({
-              'delete': true
-            }),
-            headers: {
-              'Content-Type': 'application/json'
-            }
+          fetch('/todos/' + todoId, {
+            method: 'DELETE'
           })
           .then(function(response) {
             return response.json();
           })
-          .then(function(jsonResponse) {
-            if (jsonResponse['delete'] === true) {
-              todoListItem.remove();
-              document.getElementById('error').className = 'hidden';
-            }
+          .then(function(data) {
+            listItem.parentNode.removeChild(listItem);
+            document.getElementById('error').className = 'hidden';
           })
           .catch(function() {
             document.getElementById('error').className = '';
           });
         };
       }
-
 
       // Update checkbox on a todo item ================
       const checkboxes = document.querySelectorAll('.check-completed');
@@ -98,7 +105,10 @@
               'Content-Type': 'application/json'
             }
           })
-          .then(function() {
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(data) {
             document.getElementById('error').className = 'hidden';
           })
           .catch(function() {

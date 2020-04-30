@@ -65,19 +65,15 @@ def set_completed_todo(todo_id):
   if error:
     abort(400)
   else:
-    return redirect(url_for('index')), 200
+    return jsonify({ 'success': True })
 
-@app.route('/todos/<todo_id>/delete', methods=['POST'])
+@app.route('/todos/<todo_id>', methods=['DELETE'])
 def delete_todo(todo_id):
   error = False
-  body = {}
   try:
-    to_delete = request.get_json()['delete']
-    if to_delete:
-      todo = Todo.query.get(todo_id)
-      db.session.delete(todo)
-      db.session.commit()
-      body['delete'] = True
+    todo = Todo.query.get(todo_id)
+    db.session.delete(todo)
+    db.session.commit()
   except:
     error = True
     db.session.rollback()
@@ -86,12 +82,11 @@ def delete_todo(todo_id):
     db.session.close()
   
   if error:
+    print('error')
     abort(400)
   else:
-    return jsonify(body)    
+    return jsonify({ 'success': True }), 200
   
-
-
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', port=8000)
