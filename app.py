@@ -26,15 +26,16 @@ class TodoList(db.Model):
   name = db.Column(db.String(), nullable=False)
   todos = db.relationship('Todo', backref='list', lazy=True)
 
-
-@app.route('/list/<list_id>')
-def get_list_todos(list_id):
-  todos = Todo.query.filter_by(list_id=list_id).order_by('id').all()
-  return render_template('index.html', todos=todos)
-
 @app.route('/')
 def index():
   return redirect(url_for('get_list_todos', list_id=1))
+
+@app.route('/list/<list_id>')
+def get_list_todos(list_id):
+  lists = TodoList.query.all()
+  todos = Todo.query.filter_by(list_id=list_id).order_by('id').all()
+  active_list = TodoList.query.get(list_id)
+  return render_template('index.html', lists=lists, todos=todos, active_list=active_list)
 
 @app.route('/todos/create', methods=['POST'])
 def create_todo():

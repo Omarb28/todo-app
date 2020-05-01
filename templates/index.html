@@ -14,11 +14,27 @@
         margin: 0;
         width: 200px;
       }
-      div.list {
-        margin: 100px;
-        padding: 50px;
+      div.main {
+        margin: 50px;
+        display: flex;
+      }
+      div.lists {
+        padding: 10px 25px 25px 25px;
         border: solid 1px black;
         display: inline-block;
+        margin-right: 10px;
+      }
+      div.lists li {
+        font-size: 1.5em;
+      }
+      div.list-items {
+        padding: 25px 50px;
+        border: solid 1px black;
+        display: inline-block;
+        vertical-align: top;
+      }
+      div.list-items h2 {
+        margin-top: 0px;
       }
       li {
         clear: both;
@@ -38,25 +54,38 @@
     </style>
   </head>
   <body>
-    <div class="list">
-      <form id="form" method="POST" action="/todos/create">
-        <div>
-          <label for="name">Create a To-Do Item</label>
-          <input type="text" id="description" name="description" />
-        </div>
-        <div>
-          <input type="submit" id="submit" value="Create" />
-        </div>
-      </form>
-      <div id="error" class="hidden">Something went wrong!</div>
-      <ul id="todos">
-      {% for todo in todos %}
-        <li>
-          <input type="checkbox" class="check-completed" data-id="{{ todo.id }}" {%if todo.completed %} checked {% endif %}/> {{ todo['description'] }}
-          <button class="delete-button" data-id="{{ todo.id }}">X</button>
-        </li>
-      {% endfor %}
-      </ul>
+    <div class="main">
+      <div class="lists">
+        <ul>
+          <h3>Todo Lists:</h3>
+          {% for list in lists %}
+            <li>
+              <a href="/list/{{ list.id }}">{{ list.name }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="list-items">
+        <h2>{{ active_list.name }}</h2>
+        <form id="form" method="POST" action="/todos/create">
+          <div>
+            <label for="name">Create a To-Do Item</label>
+            <input type="text" id="description" name="description" />
+          </div>
+          <div>
+            <input type="submit" id="submit" value="Create" />
+          </div>
+        </form>
+        <div id="error" class="hidden">Something went wrong!</div>
+        <ul id="todos">
+        {% for todo in todos %}
+          <li>
+            <input type="checkbox" class="check-completed" data-id="{{ todo.id }}" {%if todo.completed %} checked {% endif %}/> {{ todo['description'] }}
+            <button class="delete-button" data-id="{{ todo.id }}">X</button>
+          </li>
+        {% endfor %}
+        </ul>
+      </div>
     </div>
     <script>
 
